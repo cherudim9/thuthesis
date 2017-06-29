@@ -1,8 +1,8 @@
 \chapter{外文资料翻译}
 \label{cha:engorg}
 
-\title{供电网格分析中的多重网格技术}
-
+\title{A Multigrid-like Technique for Power Grid Analysis}
+\begin{center}\emph{Joseph N. Kozhaya, Sani R. Nassif, and Farid N. Najm}\end{center}
 \textbf{摘要}：
 现代的超大规模集成电路设计里面包括规模巨大的供电网络，供电网络需要用越来越低的电压分配大量的供电源。网格中的电压降减少了噪声区间的范围，增加了门延迟，造成了一系列的
 性能影响。用传统的电路模拟方法对供电电压的完整性进行检验是一个不现实的方法，因为时间与内存开销过大。我们提出了一个新的基于多重网格的供电网络分析技术。原供电网格
@@ -16,14 +16,14 @@
 增强的芯片功能导致了对巨大功率分布网络的需求，这也被成为供电网格因为他们经常是一个网格状的拓扑结构。更低的供电电压，另一方面，使得电压在供电网格范围内的抖动会带来
 很大的影响，进一步会导致电路的故障。电压值的降低会使得逻辑门与晶体管元件的实际供电电压比理论值要小。这会导致更窄的噪声区间，更高的逻辑门延迟，以及整个电路的降速。
 噪声区间变窄会导致电路里特定逻辑门的错误的开关切换。更高的逻辑门延迟在另一方面也会降低电路的速度导致时序要求无法满足。所以，一旦电压的降低超过了一定的设计阈值，
-电路的正常运行就没法保证了~\cite{dharchoudhury1998design, yim1999floorplan, steele1998full}。
+电路的正常运行就没法保证了[1],[2],[3]。
 
-因此，很显然在现代的VLSI设计中，供电网格正在成为制约性能的一个重要因子。所以对供电网格的高效分析~\cite{nassif2000fast, zhao2002hierarchical}是很有必要的；
+因此，很显然在现代的VLSI设计中，供电网格正在成为制约性能的一个重要因子。所以对供电网格的高效分析[4][5]是很有必要的；
 一能预测性能，二能改善性能。因为供电网格的规模大的特性，现在的分析方法都不能满足需求。所以，一个时间与内存效率都高的分析技术显得格外重要。
 
 \section{供电网格的建模与分析}
 
-在这一节中，我们会讨论供电网格的基本模型与分析技术。具体来说，\ref{}节会讨论如何对传统的供电网格、电流源、二极管进行建模，以适应高效精确的分析。另一方面\ref{}节会
+在这一节中，我们会讨论供电网格的基本模型与分析技术。具体来说，第二节节会讨论如何对传统的供电网格、电流源、二极管进行建模，以适应高效精确的分析。另一方面第三节会
 介绍基本的分析技术并讨论一些提升分析速度的技术细节。
 
 \subsection{供电网格的建模}
@@ -32,7 +32,7 @@
 从供电网格到外部供能电源($V_{DD}$)的连接被称为电力来源，因为电流是通过这个连接从外部电源流入网格的。电源漏极，另一方面，指的是那些从供电网格中获取电流的元件。比如说，
 晶体管、逻辑门、触发器、时钟缓存器、内存单元、寄存器阵列、IO缓存区等都被认为是电源漏极。
 
-供电网格分析的第一步包括对电网以及电源和漏极进行建模~\ref{chen1998interconnect}。 网格，电力来源和漏极的建模涉及准确性和速度之间的权衡。 模型越复杂分析结果越准确，
+供电网格分析的第一步包括对电网以及电源和漏极进行建模[6]。 网格，电力来源和漏极的建模涉及准确性和速度之间的权衡。 模型越复杂分析结果越准确，
 解决方案越昂贵（在内存和CPU时间方面）。
 
 \begin{figure}[H] % use float package if you want it here
@@ -42,11 +42,11 @@
   \label{fig:a1}
 \end{figure}
 
-通常，如图\ref{fig:a1}所示，集成电路内的功率分配由顶层金属层完成，顶层金属层通过层间通孔向下连接，最后到达目标器件。我们遵循如\cite{chen1998interconnect}所述的建模方法，其中金属线和通孔被建模为由电阻性，电容性和非电感性元件组成的线性、时不变的网络。 对于诸如微处理器的现代集成电路，这样的网络可以轻易地包括数百万个节点和数千万个元件。
+通常，如图\ref{fig:a1}所示，集成电路内的功率分配由顶层金属层完成，顶层金属层通过层间通孔向下连接，最后到达目标器件。我们遵循如[6]所述的建模方法，其中金属线和通孔被建模为由电阻性，电容性和非电感性元件组成的线性、时不变的网络。 对于诸如微处理器的现代集成电路，这样的网络可以轻易地包括数百万个节点和数千万个元件。
 
 至于电源和漏极，其型号可能相当复杂。 电源的型号包括复杂的封装和电路板型号。 另一方面，电源漏极的模型可以解释供电网格，底层非线性电路与跨芯片传播的时变信号之间的复杂相互作用。 然而，供电网格巨大的规模使得电源和漏极系统中只能使用最简单的模型。 因此，电力来源被建模为简单的恒定电压源，功率消耗被建模为独立的时变电流源。
 
-鉴于上述情况，完整的供电网格模型由一个由恒定电压源和时变电流源激励的RLC元件组成的线性网络。 需要注意的是，没有任何网络的RLC元件是连接到地的，所有的电压源都在某些网格节点和地之间，并且所有的电流源（漏极）都在网格节点和地之间。 这种系统的行为可以通过修改的节点分析（MNA）~\cite{pillage1998electronic}公式来表达：
+鉴于上述情况，完整的供电网格模型由一个由恒定电压源和时变电流源激励的RLC元件组成的线性网络。 需要注意的是，没有任何网络的RLC元件是连接到地的，所有的电压源都在某些网格节点和地之间，并且所有的电流源（漏极）都在网格节点和地之间。 这种系统的行为可以通过修改的节点分析（MNA）[7]公式来表达：
 \begin{align}
 Gx+C\dot{x}=u(t)
 \label{eq:eq1}
@@ -57,14 +57,14 @@ Gx+C\dot{x}=u(t)
 
 \begin{figure}[H] % use float package if you want it here
   \centering
-  \includegraphics[height=6cm]{a2}
+  \includegraphics[height=5cm]{a2}
   \caption{3x3的供电网格例子}
   \label{fig:a2}
 \end{figure}
 
 \begin{figure}[H] % use float package if you want it here
   \centering
-  \includegraphics[height=4cm]{a3}
+  \includegraphics[height=3cm]{a3}
   \caption{逆转器引去的电流}
   \label{fig:a3}
 \end{figure}
@@ -80,37 +80,38 @@ I=\begin{cases}
 
 \subsection{供电网格的分析}
 
-由于供电网格的大规模，一般电路仿真器如Spice~\cite{nagel1975spice2}不足以进行电网分析，因为CPU时间和内存有一定的限制。 标准模拟器的低效率是因为 (a)它们需要电路的元件都近似，该电路需要将常规的电路几何结构转换成一组扩展的等效电路元件，(b)它们使用通用的解决方法， 即使是难解的方程组也要保证正确性。 相比之下，供电网格在空间（非常规则）和时间（阻尼性的）方面表现良好。 这让我们想到了一种可以利用这些特性的供电网格专用模拟器。
+由于供电网格的大规模，一般电路仿真器如Spice[8]不足以进行电网分析，因为CPU时间和内存有一定的限制。 标准模拟器的低效率是因为 (a)它们需要电路的元件都近似，该电路需要将常规的电路几何结构转换成一组扩展的等效电路元件，(b)它们使用通用的解决方法， 即使是难解的方程组也要保证正确性。 相比之下，供电网格在空间（非常规则）和时间（阻尼性的）方面表现良好。 这让我们想到了一种可以利用这些特性的供电网格专用模拟器。
 
-求解式子\ref{eq:eq1}需要使用一些数值积分公式。 通常会选择逆向欧拉（BE）积分公式，主要是由于其稳定性的特点~\cite{pillage1998electronic}。对式子\ref{eq:eq1}应用后向欧拉得到一组线性方程：
+求解式子\ref{eq:eq1}需要使用一些数值积分公式。 通常会选择逆向欧拉（BE）积分公式，主要是由于其稳定性的特点[7]。对式子\ref{eq:eq1}应用后向欧拉得到一组线性方程：
 \begin{align}
 (G+C/h)x(t+h)=u(t+h)+x(t)C/h
 \label{eq:eq2}
 \end{align}
 可以被简化成$A'x(t+h)=b'$，其中$A'=G+C/h$并且$b'=u(t+h)+x(t)C/h$。
 
-式子\ref{eq:eq2}的解决方案要求矩阵$A'= G + C / h$的逆矩阵，其独立于x，时不变，规模大但是系数稀疏。 然而，我们注意到，如果我们将时间步长h保持恒定，那么只需要一个初始的矩阵分解，和每个时间步长的向前/向后的解。 因为对于大规模的矩阵，矩阵分解比前向/后向解决方案明显更花销更高~\cite{golub2012matrix}，所以使用恒定的时间步长可以大大节省计算成本。 时间步长需要保持足够小以确保解决方案的准确性。 为了在数字电路的电网分析中的应用，我们发现每个时钟周期使用100个步长（即$h = 0.01 * T$）就足够了。
+式子\ref{eq:eq2}的解决方案要求矩阵$A'= G + C / h$的逆矩阵，其独立于x，时不变，规模大但是系数稀疏。 然而，我们注意到，如果我们将时间步长h保持恒定，那么只需要一个初始的矩阵分解，和每个时间步长的向前/向后的解。 因为对于大规模的矩阵，矩阵分解比前向/后向解决方案明显更花销更高[9]，所以使用恒定的时间步长可以大大节省计算成本。 时间步长需要保持足够小以确保解决方案的准确性。 为了在数字电路的电网分析中的应用，我们发现每个时钟周期使用100个步长（即$h = 0.01 * T$）就足够了。
 
 \begin{figure}[H] % use float package if you want it here
   \centering
-  \includegraphics[height=4cm]{a4}
+  \includegraphics[height=5cm]{a4}
   \caption{根据修改的节点分析法得到的矩阵}
   \label{fig:a4}
 \end{figure}
 
 为了更好地解释供电网格的分析过程，将修改的节点分析法（MNA）应用于图\ref{fig:a2}给出的示例，从而得到了图\ref{fig:a4}所示的线性系统。
 
-令$N$为电网的节点数。 然后，在图\ref{fig:a2}所示的示例网格中，$N = 9$，因为网格是3x3。此外，存在一个电压源，这意味着$A'$矩阵是10x10矩阵，其中前9个方程是应用KCL方程在所有9个节点上，最后一个方程是节点1处的电压源分配的KVL方程。 电流源方面，节点5和7中的电流源出现在右侧矢量$b'$中。 另一方面，$g_{ij}$定义了两个相邻节点$i$和$j$之间的电导。 因此，$g{ij} = g{ji}$导致$A'$矩阵是对称的。 此外，A矩阵的对角元素定义如下：
+令$N$为电网的节点数。 然后，在图\ref{fig:a2}所示的示例网格中，$N = 9$，因为网格是3x3。此外，存在一个电压源，这意味着$A'$矩阵是10x10矩阵，其中前9个方程是应用KCL方程在所有9个节点上，最后一个方程是节点1处的电压源分配的KVL方程。 电流源方面，节点5和7中的电流源出现在右侧矢量$b'$中。 另一方面，$g_{ij}$定义了两个相邻节点$i$和$j$之间的电导。 因此，$g_{ij} = g_{ji}$导致$A'$矩阵是对称的。 此外，A矩阵的对角元素定义如下：
 \begin{align}
     G_i = \sum_{j\in N_i} |g_{ij}| + C_i/h
+    \label{eq:eq3}
 \end{align}
 其中，$C_i$是节点$i$的电容，$h$是时间步长，$N_i={j|g{ij}\neq 0}$是节点$i$的邻接点集合。
 
-通常，线性系统$A'x = b'$的系统矩阵$A'$是对称的，但不一定是正定的~\cite{9}。然而，该问题可以被重新归纳到对称的正定矩阵$A$上。基本上，MNA公式通过在电源节点处运用KCL和KVL方程来构建线性系统$A'x = b'$，以及剩下的网格节点的KCL方程。然后，所得到的线性系统的解$x$给出了所有电网节点处的电压以及由不同电压源提供的电流。然而，如果我们只对所有电网节点的电压感兴趣，那么我们可以忽略与电源节点相对应的KCL方程。此外，电源节点处的电压已知为电源电压$V_{DD}$。因此，我们可以通过将电源的值替换为所有电源节点的电压，并忽略电源节点的KCL方程来简化问题。
+通常，线性系统$A'x = b'$的系统矩阵$A'$是对称的，但不一定是正定的[9]。然而，该问题可以被重新归纳到对称的正定矩阵$A$上。基本上，MNA公式通过在电源节点处运用KCL和KVL方程来构建线性系统$A'x = b'$，以及剩下的网格节点的KCL方程。然后，所得到的线性系统的解$x$给出了所有电网节点处的电压以及由不同电压源提供的电流。然而，如果我们只对所有电网节点的电压感兴趣，那么我们可以忽略与电源节点相对应的KCL方程。此外，电源节点处的电压已知为电源电压$V_{DD}$。因此，我们可以通过将电源的值替换为所有电源节点的电压，并忽略电源节点的KCL方程来简化问题。
 
 \begin{figure}[H] % use float package if you want it here
   \centering
-  \includegraphics[height=4cm]{a5}
+  \includegraphics[height=5cm]{a5}
   \caption{变形后的线性方程系统}
   \label{fig:a5}
 \end{figure}
@@ -122,14 +123,14 @@ I=\begin{cases}
 |G_i| = \sum_{j\in N_i} |g_{ij}|+C_i/h=\sum_{j\neq i}|g_{ij}|+C_i/h\geq \sum_{j\neq i}g_{ij} \quad \forall i
 \label{eq:eq4}
 \end{align}
-方程\ref{eq:eq4}适用于每个节点$i$，等效于系统矩阵$A$的每一行。这表明变形后的矩阵$A$是对角占优的，并且已经指出$A$也是对称的。 所以，$A$是一个对称和正定矩阵~\cite{golub2012matrix}。 事实上，$A$是M-矩阵~\cite{berman1994nonnegative}，因为它满足以下条件：
+式\ref{eq:eq4}适用于每个节点$i$，等效于系统矩阵$A$的每一行。这表明变形后的矩阵$A$是对角占优的，并且已经指出$A$也是对称的。 所以，$A$是一个对称和正定矩阵[9]。 事实上，$A$是M-矩阵[10]，因为它满足以下条件：
 \begin{enumerate}
 \item $a_{ii}>0 \quad \forall i$
 \item $a_{ij}\leq 0 \quad \forall i\neq j$
 \item $a_{ii}\geq \sum_{j\neq i}|a_{ij}| \quad \forall i$
 \item $a_{ii}>\sum_{j\neq i}|a_{ij}| \quad \exists i$
 \end{enumerate}
-其中$a_{ij}$矩阵$A$第$i$行第$j$列的元素。所以，在剩下的篇幅里，我们会利用$A$是一个非奇异的$M$矩阵的性质。
+其中$a_{ij}$是矩阵$A$第$i$行第$j$列的元素。所以，在剩下的篇幅里，我们会利用$A$是一个非奇异的$M$矩阵的性质。
 
 \section{多重网格方法}
 
@@ -137,9 +138,9 @@ I=\begin{cases}
 
 此外，我们注意到，电网分析会产生一个与二维抛物线偏微分方程（PDE）的有限元离散化相似的线性方程组。 这促使我们将电网问题视为连续PDE的离散化，其中需要在空间固定的点解出所需值。 因此，解决PDE的有效方法值得考虑作为电网问题的潜在解决方案。
 
-近年来，多重网格方法（MG）已经成为解决平滑PDE的标准解法~\cite{briggs2000multigrid,brandt1973multi,hackbusch2013multi}。 多重网格涉及两个基本操作：i)松弛操作和 ii)粗网格校正。松弛操作涉及运行迭代求解器的几次迭代，以平滑误差分量；也就是减少高频误差分量。 另一方面，粗网格校正涉及将问题映射到较粗的网格，在较粗的网格上解决问题，然后将解决方案映射回原始网格。 这两个相辅相成的步骤一起提供了一种解决PDE的有效技术。 因此，在本文中，我们认为可以把它用于电网分析中。
+近年来，多重网格方法（MG）已经成为解决平滑PDE的标准解法[11],[12],[13]。 多重网格涉及两个基本操作：i)松弛操作和 ii)粗网格校正。松弛操作涉及运行迭代求解器的几次迭代，以平滑误差分量；也就是减少高频误差分量。 另一方面，粗网格校正涉及将问题映射到较粗的网格，在较粗的网格上解决问题，然后将解决方案映射回原始网格。 这两个相辅相成的步骤一起提供了一种解决PDE的有效技术。 因此，在本文中，我们认为可以把它用于电网分析中。
 
-虽然经典的迭代方法由于网格维度增加（等效的网格间距减小）而收敛速度大大降低时，但是多网格性能并不能确定。 事实上，已经证明多网格具有最佳的性能，因为可以用O$(n)$复杂度来解决$n$个方程的系统。多重电网技术 不仅是最优复杂度的，而且所涉及的常数都足够小，让多重电网优于其他方法~\cite{hackbusch2013multi}。 我们应该在这里指出，多重网格方法属于像Jacobi和Gauss-Seidel这样的迭代求解器类别，而不是像高斯消除那样的直接求解器。
+虽然经典的迭代方法由于网格维度增加（等效的网格间距减小）而收敛速度大大降低时，但是多网格性能并不能确定。 事实上，已经证明多网格具有最佳的性能，因为可以用O$(n)$复杂度来解决$n$个方程的系统。多重电网技术 不仅是最优复杂度的，而且所涉及的常数都足够小，让多重电网优于其他方法[13]。 我们应该在这里指出，多重网格方法属于像Jacobi和Gauss-Seidel这样的迭代求解器类别，而不是像高斯消除那样的直接求解器。
 
 我们已经提到，经典迭代方法的分析与对多重网格很有关系。 所以我们将从对经典迭代方法的简要分析开始。 给定线性系统$Ax = b$和初始猜测$x_0$，迭代方案涉及如下：
 \begin{align}
@@ -147,19 +148,19 @@ I=\begin{cases}
 \end{align}
 其中$k$是迭代的当前次数，$\hat{x}^k$是第$k$轮迭代后的对解的估计值。对于$M$，它是一个易于求解的矩阵，使得$M^{-1}\approx A^{-1}$。
 
-令$e = x-\hat{x}$为精确解$x$与近似解$\hat{x}$之间的差。 可以看出，误差可以表示为低频和高频傅里叶模式的线性组合~\cite{briggs2000multigrid}。 此外，经典迭代法的分析导致以下观察~\cite{briggs2000multigrid, stuben1982multigrid}：
+令$e = x-\hat{x}$为精确解$x$与近似解$\hat{x}$之间的差。 可以看出，误差可以表示为低频和高频傅里叶模式的线性组合[11]。 此外，经典迭代法的分析导致以下观察[11],[15]:
 经典迭代方法有效地降低了高频误差分量，但在降低低频误差分量方面效率不高。
 
 为了避免经典方法的局限性，多重网格方法由两个互补的部分组成：1) 松弛操作，可以减少高频误差；2）粗网格修正，可以减少低频误差。
 
 \begin{figure}[H] % use float package if you want it here
   \centering
-  \includegraphics[height=7cm]{a6}
+  \includegraphics[height=6.5cm]{a6}
   \caption{迭代方法的松弛效果}
   \label{fig:a6}
 \end{figure}
 
-松弛操作涉及到经典迭代求解器的几次迭代。从观察结果可以看出，经典的迭代方法是良好的平滑器，如图\ref{fig:a6}所示~\cite{stuben1982multigrid}。另一方面，粗网格校正将问题映射到较粗的网格，解决映射问题，并将得到的解映射回到精细的网格。两个网格（细和粗）之间通信所需的关键工具是网格间转移子，分别是网格限制子和网格延长子。粗网格校正的一个直观的动机是粗网格的解决方案通常为细网格上的迭代求解器提供了良好的初始猜测，从而能加速收敛。这种方法的另一个动机是，如图\ref{fig:a7}所示，细电网$\Omega^h$的低频误差分量在粗网格$\Omega^{2h}$出现更多的振荡。所以应在较粗的网格上进行松弛操作，减少这些误差成分。
+松弛操作涉及到经典迭代求解器的几次迭代。从观察结果可以看出，经典的迭代方法是良好的平滑器，如图\ref{fig:a6}所示[15]。另一方面，粗网格校正将问题映射到较粗的网格，解决映射问题，并将得到的解映射回到精细的网格。两个网格（细和粗）之间通信所需的关键工具是网格间转移子，分别是网格限制子和网格延长子。粗网格校正的一个直观的动机是粗网格的解决方案通常为细网格上的迭代求解器提供了良好的初始猜测，从而能加速收敛。这种方法的另一个动机是，如图\ref{fig:a7}所示，细电网$\Omega^h$的低频误差分量在粗网格$\Omega^{2h}$出现更多的振荡。所以应在较粗的网格上进行松弛操作，减少这些误差成分。
 
 \begin{figure}[H] % use float package if you want it here
   \centering
@@ -168,7 +169,7 @@ I=\begin{cases}
   \label{fig:a7}
 \end{figure}
 
-多重网格技术的工作如下~\cite{briggs2000multigrid}。 从精细网格开始，进行几个松弛步骤应用以减少误差中的高频部分。 然后误差中的低频部分通过粗网格校正也得到了降低。 这产生了下面的这个高效率的算法，我们称之为V-循环多重网格方法。 在下文中，$R_h^{2h}$和$P^h_{2h}$分别对应于限制操作子和延长操作子。 另一方面，$V^h$表示V-cycle算法；并且用$h$定义V-cycle算法被调用的深度。 $v_1$和$v_2$是要执行的迭代次数，是常数。 这些常数是依据经验选择的，通常是2或3。
+多重网格技术的工作如下[11]。 从精细网格开始，进行几个松弛步骤应用以减少误差中的高频部分。 然后误差中的低频部分通过粗网格校正也得到了降低。 这产生了下面的这个高效率的算法，我们称之为V-循环多重网格方法。 在下文中，$R_h^{2h}$和$P^h_{2h}$分别对应于限制操作子和延长操作子。 另一方面，$V^h$表示V-cycle算法；并且用$h$定义V-cycle算法被调用的深度。 $v_1$和$v_2$是要执行的迭代次数，是常数。 这些常数是依据经验选择的，通常是2或3。
 
 \begin{align*}
 \hat{x}^h \leftarrow V_h(\hat{x}^h, b^h)
@@ -197,12 +198,12 @@ I=\begin{cases}
 
 一旦网格被缩减，我们提出的方法定义了插值算子，以满足代数多重网格方法的要求。 也就是说，插值算子被定义为使得不能很好地减少的误差分量位于其范围空间中的算子。假设插值运算符满足：
 \begin{align}
-e^h_i=e^H_i \quad \text{if }i\text{ is kept and} \\
-e^h_i=\sum_{j\in N_i} \frac{|a_{ij}|}{a_{ii}} e^H_j \quad \text{if }i\text{ is removed}
+e^h_i & =e^H_i &\text{如果 }i\text{ 被保留 或者} \\
+e^h_i & =\sum_{j\in N_i} \frac{|a_{ij}|}{a_{ii}} e^H_j &\text{如果 }i\text{ 被移除}
 \end{align}
 其中$h$和$H$分别表示细网格与粗网格。
 
-这个定义可以保证误差在于插值算子所定义的范围空间内，因为$e_h = P_H^he^H$。 注意如果$|a_{ij}|/a_{ii}$很小，那么节点$j$的效果可以忽略不计。 也就是说，将已删除的节点$i$的电压与强连接到$i$的那些节点进行插值是足够的。 基于此，我们从去除的节点$m$与$m$强连接的节点的电压进行插值。 由于网格的几何形状是已知的，因此可以容易地识别出与$m$强连接的且仍保留着的节点。 通常来说，这些将是$m$的几何邻居和/或其这些邻居对应的邻居。
+这个定义可以保证误差在于插值算子所定义的范围空间内，因为$e^h = P_H^he^H$。 注意如果$|a_{ij}|/a_{ii}$很小，那么节点$j$的效果可以忽略不计。 也就是说，将已删除的节点$i$的电压与强连接到$i$的那些节点进行插值是足够的。 基于此，我们从去除的节点$m$与$m$强连接的节点的电压进行插值。 由于网格的几何形状是已知的，因此可以容易地识别出与$m$强连接的且仍保留着的节点。 通常来说，这些将是$m$的几何邻居和/或其这些邻居对应的邻居。
 
 因此，提出的方法结合了标准与代数这两种多重网格技术的优点，同时避免了它们的局限性。 此外，所提出的方法与常规多重网格相比还有另一个显着的优点。 如前所述，多重网格包含两个主要部分：松弛（或平滑）操作和粗网格校正。 松弛操作的作用基本上是平滑误差分量，而粗网格校正的作用是近似估计那些平滑的误差分量。 然而，在电网中，误差分量通常是平滑的，因为供电网格被设计成在网格上具有平滑的电压变化。 因此，在解决电网问题时，可以忽略多重网格的松弛步骤，仅集中在粗网格校正步骤上。 这正是我们提出的方法所做的，下面的实验结果表明，这种假设带来了显着的加速，同时只引入了非常小的误差。
 
@@ -224,7 +225,7 @@ $b^{2h}=(P^h_{2h})^Tb^h$，然后在粗网格上求解$A^{2h}x^{2h}=b^{2h}$，�
   \centering
   \includegraphics[height=6cm]{a8}
   \caption{供电网格的多种解析度}
-  \label{fig:a7}
+  \label{fig:a8}
 \end{figure}
 
 一种有效的供电网格缩减方法是跳过所有其他导线，导致如图\ref{fig:a8}所示的情况。 然而，典型的供电网格可能是不规则的，即不同的边缘可能具有不同的长度和不同的间隔距离。 因此，网格缩减算法应该具有缩减任何一般网格的功能通用性。 此外，该算法应该保持原始的网格结构，使其可以被递归地应用，直到产生足够粗的网格。
@@ -234,7 +235,7 @@ $b^{2h}=(P^h_{2h})^Tb^h$，然后在粗网格上求解$A^{2h}x^{2h}=b^{2h}$，�
 
 \begin{figure}[H] % use float package if you want it here
   \centering
-  \includegraphics[height=4cm]{t1}
+  \includegraphics[height=3cm]{t1}
   \caption{状态标记的定义}
   \label{fig:t1}
 \end{figure}
@@ -293,3 +294,211 @@ V(m)=\frac{|a_{mA}|}{a_{mm}}V(A)+\frac{|a_{mB}|}{a_{mm}}V(B)
 \end{figure}
 
 然而，这还不是全部。回想一下，我们的供电网格缩减算法与代数多重网格缩减方法不同；它实际上是基于标准多重网格算法的缩减算法，它只使用了几何信息，并删除尽可能多的节点。因此，有可能遇到被移除节点$i$的与其强连接的所有节点也被删除的情况。为了说明这一点，考虑图\ref{fig:a11}，其中实心节点指示被去除的节点，空心节点指示保留的节点。在这个例子中，我们假设每个水平或垂直连接都代表一个强连接，但由两个或更多个连接分开的节点间并没有强连接。这种情况是供电网格的典型情况。因此，r与m强连接，m与B强连接，但r和B不连接。这种类似于B的节点，与r之间没有强连接但是通过两个强连接能与r有关系的节点，我们称它们与r\emph{二度强连接}。我们的网格缩减将删除节点r，以及强烈连接到它的所有节点，m，n，p和q。然而，可以发现，我们的算法保证，如果删除节点i，则保留与i强连接的一些节点，或者保留与i\emph{二度强连接}的一些节点。因此，在我们的插值技术中，如果一个节点的所有强连接的邻居与它一起被去除，我们使用它的\emph{二度强连接}的保留的邻居节点进行插值。这在图\ref{fig:a11}中能清楚地看出。，其中节点r处的电压从\emph{二度强连接}到r的那些节点插值而得到；具体来说，是节点A，B，C，D和E。注意，这种方法保持了有效网格减少的优点，同时满足了良好的插值操作子的要求。
+
+\subsection{实验结果}
+本论文所提出的多重网格方法已被实现并集成到用C++编写的线性模拟器中。 本节报告的所有实验结果都是通过在具有2GB RAM并运行SunOS 5.7操作系统的400MHz ULTRA 2 Sun工作站上运行仿真而获得的。
+
+我们通过把算法应用于两个工业中实际的ASIC设计电网分析例子，来说明所提出的技术的实用性和效率。 我们将这些设计称为C1和C2。 C1和C2均为$0.18\mu$的CMOS设计，电源电压为1.8V。对于供电网格来说，该技术需要输入与芯片上不同功率的漏极相关的电流。
+
+根据不同的目标，我们可以使用不同的电流度量进行分析。 例如，虽然峰值电流值是IR降低的一个很好的测量方式，但平均电流值是电磁分析中更好的测量方法。 另一方面，电流波形是瞬态分析中相当合适的电流度量方式。 获得当前感兴趣的电流度量的直接方法是模拟在额定负载和现实切换因素下的功率消耗情况。 这是我们当前用于分析的主要方法。 在我们所有面对直流分析的实验中，我们使用功率消耗器绘制的峰值电流作为我们当前的测量值。 对于瞬态分析，所使用的电流度量是与不同功率的漏极相关的电流波形。
+
+\begin{figure}[H] % use float package if you want it here
+  \centering
+  \includegraphics[height=5cm]{t2}
+  \caption{使用直接求解器与多重网格技术后的网格缩减结果及其运行时间}
+  \label{fig:t2}
+\end{figure}
+
+我们模拟了两种不规则电网的设计C1和C2。 应用了几个网格缩减之后，问题相应地映射到较粗的网格（如前所述，不断进行网格缩减操作，直到网格如用户所指定的那样粗糙）。 表\ref{fig:t2}中显示了在指定四个级别的缩减操作时，每个级别的网格节点数。 表中还显示了使用常规直接求解器（如第4列所示）求解给定线性系统以及我们所提出的多重网格式技术（如第5列所示）的CPU时间。 很明显，我们所提出的新技术比传统的仿真快16至20倍。 请注意，实验中使用了相同的直接求解器来解决原始的网格系统以及缩减后的网格系统，从而验证了加速不是由于求解器之间的差别而到导致的。
+
+为了验证我们提出的技术的计算结果的准确性，我们将准确的解与我们的算法返回的估计解相比较。 两个设计C1和C2的不同节点的电压中的相对误差的直方图分别如图\ref{fig:a12}和\ref{fig:a13}所示。
+
+对于设计C1，节点电压误差的分布平均值为$-0.0077\%$，标准偏差为$0.0333\%$。 对于设计C2，误差分布的平均值为$-0.0026\%$，标准偏差为$0.0167\%$。 此外，图\ref{fig:a12}和\ref{fig:a13}还显示了两种设计的所有电网节点的误差在$-1.0\%$至$1.0\%$的范围内。 事实上，设计C1的错误范围从$-0.93\%$到$0.66\%$，而设计C2的误差范围从$-0.30\%$到$1.0\%$。 因此，很明显，我们所提出的技术提供了对于供电网格问题的准确的解决方案，并且比正常求解器有着显著的效率优势。
+
+\begin{figure}[H] % use float package if you want it here
+  \centering
+  \includegraphics[height=9cm]{a12}
+  \caption{C1设计中的节点电压值误差直方图}
+  \label{fig:a12}
+\end{figure}
+
+\begin{figure}[H] % use float package if you want it here
+  \centering
+  \includegraphics[height=9cm]{a13}
+  \caption{C2设计中的节点电压值误差直方图}
+  \label{fig:a13}
+\end{figure}
+
+如前所述，我们提出的多网格技术在应用于瞬态分析时更为有利。由表\ref{fig:t3}说明，其显示了使用常规求解器和我们的技术来运行两种设计的供电网格的瞬态模拟所需的时间。供电网格的模拟时长为4ns，时间步长为0.4ns。在这两种设计中，我们的技术的加速优势都是明显的。然而，在C2设计的情况下更为显著，原因是由于内存限制，C2设计中我们只能使用迭代求解器来模拟。在这个情况下，对于每个时间步长，迭代求解器总共使用了14.3小时来模拟供电网格。然而，另一方面，我们的技术使用直接求解器来解决网格上的问题。在这个情况下，只需要一个初始矩阵因子分解，并且在剩余时间步长中仅需要前向/后向求解。所以使用我们的多网格技术进行瞬态分析所需的总时间仅为86.36秒，代表瞬态分析的加速比为600倍。
+
+\begin{figure}[H] % use float package if you want it here
+  \centering
+  \includegraphics[height=2cm]{t3}
+  \caption{瞬态分析中的网格缩减与运行时间}
+  \label{fig:t3}
+\end{figure}
+
+最后，仍然要验证瞬态分析中所得到的近似解的准确性。 图\ref{fig:a14}和\ref{fig:a15}分别表示出了设计C1和C2的供电网格的某些节点处的电压波形。 很明显，多重网格技术可以准确地跟踪给定节点处的精确电压波形。 图\ref{fig:a16}和\ref{fig:a17}表示出了电压降中的估计误差（电压降与电压值不同），显示出约16％的最差情况误差。 因此，多网格技术为直流DC以及供电网格的瞬态分析提供了精度相对较高的解，并且具有比常规分析技术显着加速的优点。
+
+\begin{figure}[H] % use float package if you want it here
+  \centering
+  \includegraphics[height=9cm]{a14}
+  \caption{C1设计中一个网格节点的电压波形的误差}
+  \label{fig:a14}
+\end{figure}
+
+\begin{figure}[H] % use float package if you want it here
+  \centering
+  \includegraphics[height=9cm]{a15}
+  \caption{C2设计中一个网格节点的电压波形的误差}
+  \label{fig:a15}
+\end{figure}
+
+\begin{figure}[H] % use float package if you want it here
+  \centering
+  \includegraphics[height=9cm]{a16}
+  \caption{C1设计中一个网格节点的电压降波形的误差}
+  \label{fig:a16}
+\end{figure}
+
+\begin{figure}[H] % use float package if you want it here
+  \centering
+  \includegraphics[height=9cm]{a17}
+  \caption{C2设计中一个网格节点的电压降波形的误差}
+  \label{fig:a17}
+\end{figure}
+
+
+\section{结论}
+本文介绍了一种用于供电网格分析的类似于PDE方法的算法。 它遵循广泛用于解决光滑PDE问题的多重网格技术的基本思路。 然而，我们所提出的技术属于直接求解器的类别，因此与常规多重网格方法有着明显的不同，该方法属于迭代求解器类别。 在真实设计上的实验结果表明，使用本文方法的直流和瞬态分析都加速了一到二个数量级。
+
+\section*{参考文献}
+
+\begin{enumerate}[{[}1{]}]
+\item Dharchoudhury, Abhijit, et al. "Design and analysis of power distribution networks in PowerPC microprocessors." Proceedings of the 35th annual Design Automation Conference. ACM, 1998.
+\item Yim, Joon-Seo, Seong-Ok Bae, and Chong-Min Kyung. "A floorplan-based planning methodology for power and clock distribution in ASICs [CMOS technology]." Design Automation Conference, 1999. Proceedings. 36th. IEEE, 1999.
+\item Steele, Gregory, et al. "Full-chip verification methods for DSM power distribution systems." Proceedings of the 35th annual Design Automation Conference. ACM, 1998.
+\item Nassif, Sani R., and Joseph N. Kozhaya. "Fast power grid simulation." Proceedings of the 37th Annual Design Automation Conference. ACM, 2000.
+\item Zhao, Min, et al. "Hierarchical analysis of power distribution networks." IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 21.2 (2002): 159-168.
+\item Chen, Howard H., and J. Scott Neely. "Interconnect and circuit modeling techniques for full-chip power supply noise analysis." IEEE Transactions on Components, Packaging, and Manufacturing Technology: Part B 21.3 (1998): 209-215.
+\item Pillage, Lawrence. Electronic Circuit \& System Simulation Methods (SRE). McGraw-Hill, Inc., 1998.
+\item Nagel, Laurence W. "SPICE2: A computer program to simulate semiconductor circuits." ERL Memo ERL-M520 (1975).
+\item Golub, Gene H., and Charles F. Van Loan. Matrix computations. Vol. 3. JHU Press, 2012.
+\item Berman, Abraham, and Robert J. Plemmons. Nonnegative matrices in the mathematical sciences. Society for Industrial and Applied Mathematics, 1994.
+\item Briggs, William L., Van Emden Henson, and Steve F. McCormick. A multigrid tutorial. Society for Industrial and Applied Mathematics, 2000.
+\item Brandt, Achi. "Multi-level adaptive technique (MLAT) for fast numerical solution to boundary value problems." Proceedings of the Third International Conference on Numerical Methods in Fluid Mechanics. Springer Berlin/Heidelberg, 1973.
+\item Hackbusch, Wolfgang. Multi-grid methods and applications. Vol. 4. Springer Science \& Business Media, 2013.
+\item Brandt, Achi. "Multi-level adaptive technique (MLAT) for fast numerical solution to boundary value problems." Proceedings of the Third International Conference on Numerical Methods in Fluid Mechanics. Springer Berlin/Heidelberg, 1973.
+\item Stüben, Klaus, and Ulrich Trottenberg. "Multigrid methods: Fundamental algorithms, model problem analysis and applications." Multigrid methods. Springer Berlin Heidelberg, 1982. 1-176.
+\item Ruge, John W., and Klaus Stüben. "Algebraic multigrid." Multigrid methods 3.13 (1987): 73-130.
+\end{enumerate}
+
+\chapter{数据集样例数据}
+
+第四节中的Spice格式样例数据如下：
+\begin{lstlisting}
+rr0 n3_0_0 _X_n3_0_0 0.5
+v1 _X_n3_0_0 0 1
+rr2 n2_125_125 _X_n2_125_125 0.5
+v3 _X_n2_125_125 0 0
+* layer: M1,VDD net: 1
+R4 n1_0_0 n1_50_0 1.25
+R5 n1_50_0 n1_100_0 1.25
+R6 n1_100_0 n1_150_0 1.25
+R7 n1_0_50 n1_50_50 1.25
+R8 n1_50_50 n1_100_50 1.25
+R9 n1_100_50 n1_150_50 1.25
+R10 n1_0_100 n1_50_100 1.25
+R11 n1_50_100 n1_100_100 1.25
+R12 n1_100_100 n1_150_100 1.25
+R13 n1_0_150 n1_50_150 1.25
+R14 n1_50_150 n1_100_150 1.25
+R15 n1_100_150 n1_150_150 1.25
+* vias from: 1 to 3
+V16 n1_0_0 n3_0_0 0.0
+V17 n1_0_50 n3_0_50 0.0
+V18 n1_0_100 n3_0_100 0.0
+V19 n1_0_150 n3_0_150 0.0
+V20 n1_50_0 n3_50_0 0.0
+V21 n1_50_50 n3_50_50 0.0
+V22 n1_50_100 n3_50_100 0.0
+V23 n1_50_150 n3_50_150 0.0
+V24 n1_100_0 n3_100_0 0.0
+V25 n1_100_50 n3_100_50 0.0
+V26 n1_100_100 n3_100_100 0.0
+V27 n1_100_150 n3_100_150 0.0
+V28 n1_150_0 n3_150_0 0.0
+V29 n1_150_50 n3_150_50 0.0
+V30 n1_150_100 n3_150_100 0.0
+V31 n1_150_150 n3_150_150 0.0
+* layer: M2,VDD net: 3
+R32 n3_0_0 n3_0_50 1.25
+R33 n3_0_50 n3_0_100 1.25
+R34 n3_0_100 n3_0_150 1.25
+R35 n3_50_0 n3_50_50 1.25
+R36 n3_50_50 n3_50_100 1.25
+R37 n3_50_100 n3_50_150 1.25
+R38 n3_100_0 n3_100_50 1.25
+R39 n3_100_50 n3_100_100 1.25
+R40 n3_100_100 n3_100_150 1.25
+R41 n3_150_0 n3_150_50 1.25
+R42 n3_150_50 n3_150_100 1.25
+R43 n3_150_100 n3_150_150 1.25
+* layer: M1,GND net: 0
+R44 n0_25_25 n0_75_25 1.25
+R45 n0_75_25 n0_125_25 1.25
+R46 n0_25_75 n0_75_75 1.25
+R47 n0_75_75 n0_125_75 1.25
+R48 n0_25_125 n0_75_125 1.25
+R49 n0_75_125 n0_125_125 1.25
+* layer: M2,GND net: 2
+R50 n2_25_25 n2_25_75 1.25
+R51 n2_25_75 n2_25_125 1.25
+R52 n2_75_25 n2_75_75 1.25
+R53 n2_75_75 n2_75_125 1.25
+R54 n2_125_25 n2_125_75 1.25
+R55 n2_125_75 n2_125_125 1.25
+* vias from: 0 to 2
+V56 n0_25_25 n2_25_25 0.0
+V57 n0_25_75 n2_25_75 0.0
+V58 n0_25_125 n2_25_125 0.0
+V59 n0_75_25 n2_75_25 0.0
+V60 n0_75_75 n2_75_75 0.0
+V61 n0_75_125 n2_75_125 0.0
+V62 n0_125_25 n2_125_25 0.0
+V63 n0_125_75 n2_125_75 0.0
+V64 n0_125_125 n2_125_125 0.0
+*
+iB0_0_v n1_0_0 0 0.3125m
+iB0_0_g 0 n0_25_25 0.3125m
+iB0_1_v n1_0_50 0 0.3125m
+iB0_1_g 0 n0_25_25 0.3125m
+iB0_2_v n1_0_100 0 0.3125m
+iB0_2_g 0 n0_25_75 0.3125m
+iB0_3_v n1_0_150 0 0.3125m
+iB0_3_g 0 n0_25_125 0.3125m
+iB0_4_v n1_50_0 0 0.3125m
+iB0_4_g 0 n0_25_25 0.3125m
+iB0_5_v n1_100_0 0 0.3125m
+iB0_5_g 0 n0_75_25 0.3125m
+iB0_6_v n1_50_50 0 0.3125m
+iB0_6_g 0 n0_25_25 0.3125m
+iB0_7_v n1_50_100 0 0.3125m
+iB0_7_g 0 n0_25_75 0.3125m
+iB0_8_v n1_100_50 0 0.3125m
+iB0_8_g 0 n0_75_25 0.3125m
+iB0_9_v n1_100_100 0 0.3125m
+iB0_9_g 0 n0_75_75 0.3125m
+iB0_10_v n1_50_150 0 0.3125m
+iB0_10_g 0 n0_25_125 0.3125m
+iB0_11_v n1_100_150 0 0.3125m
+iB0_11_g 0 n0_75_125 0.3125m
+iB0_12_v n1_150_0 0 0.3125m
+iB0_12_g 0 n0_125_25 0.3125m
+iB0_13_v n1_150_50 0 0.3125m
+iB0_13_g 0 n0_125_25 0.3125m
+iB0_14_v n1_150_100 0 0.3125m
+iB0_14_g 0 n0_125_75 0.3125m
+iB0_15_v n1_150_150 0 0.3125m
+iB0_15_g 0 n0_125_125 0.3125m
+\end{lstlisting}
